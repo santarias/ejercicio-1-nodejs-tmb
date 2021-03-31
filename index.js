@@ -3,25 +3,6 @@ const inquirer = require("inquirer");
 
 const { log } = console;
 
-log(chalk.hex("#548273").bold("que pasa paza"));
-
-const preguntas = [
-  {
-    type: "list",
-    name: "transporte",
-    message: "¿Qué tipo de transporte quiere consultar?",
-    choices: [
-      "Metro",
-      "Bus",
-    ],
-  },
-];
-
-const casoBus = () => {
-  log(chalk.yellow("No tenemos informacion disponible sobre los buses"));
-  log("https://www.tmb.cat/es/home");
-};
-
 inquirer
   .prompt([
     {
@@ -54,14 +35,21 @@ inquirer
       type: "confirm",
       name: "errores",
       message: "¿Quiere que le informemos de los errores?",
-      default: false
+      default: false,
+      when: (answers) => answers.transporte !== "Bus",
     },
     {
       type: "input",
       name: "linea_consulta",
       message: "¿Qué línea quiere consultar?",
+      when: (answers) => answers.transporte !== "Bus",
     }
   ])
   .then((answers) => {
-    log(JSON.stringify(answers, null, "  "));
+    if (answers.transporte === "Bus") {
+      log(chalk.yellow("No tenemos informacion disponible sobre los buses"));
+      log("https://www.tmb.cat/es/home");
+    } else {
+      log(JSON.stringify(answers, null, "  "));
+    }
   });
